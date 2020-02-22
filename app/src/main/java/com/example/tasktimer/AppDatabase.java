@@ -5,13 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/**
- * Created by timbuchalka on 19/10/16.
- *
- * Basic database class for the application.
- *
- * The only class that should use this is AppProvider.
- */
+// SQLiteOpenHelper should only accessed by AppProvider
 
 class AppDatabase extends SQLiteOpenHelper {
     private static final String TAG = "AppDatabase";
@@ -55,7 +49,7 @@ class AppDatabase extends SQLiteOpenHelper {
         Log.d(TAG, sSQL);
         db.execSQL(sSQL);
 
-        Log.d(TAG, "onCreate: ends");
+        Log.d(TAG, "onCreate: done");
 
     }
 
@@ -69,7 +63,7 @@ class AppDatabase extends SQLiteOpenHelper {
             default:
                 throw new IllegalStateException("onUpgrade() with unknown newVersion: " + newVersion);
         }
-        Log.d(TAG, "onUpgrade: ends");
+        Log.d(TAG, "onUpgrade: done");
     }
 }
 
