@@ -175,11 +175,104 @@ public class AppProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        Log.d(TAG, "delete called with uri " + uri);
+        final int match = sUriMatcher.match(uri);
+        Log.d(TAG, "match is " + match);
+
+        final SQLiteDatabase db;
+        int count;
+        String selectionForDelete;
+
+        switch (match) {
+            case TASKS:
+                db = dbHelper.getWritableDatabase();
+                count = db.delete(TasksContract.TABLE_NAME, selection, selectionArgs);
+                break;
+
+            case TASKS_ID:
+                db = dbHelper.getWritableDatabase();
+                long taskId = TasksContract.getTaskId(uri);
+                // find task with the id first
+                selectionForDelete = TasksContract.Columns._ID + " = " + taskId;
+
+                if (selection != null && selection.length() > 0) {
+                    selectionForDelete += " AND (" + selection + ")";
+                }
+                count = db.delete(TasksContract.TABLE_NAME, selectionForDelete, selectionArgs);
+                break;
+
+//            case TIMINGS:
+//                db = dbHelper.getWritableDatabase();
+//                count = db.delete(TimingsContact.TABLE_NAME, selection, selectionArgs);
+//                break;
+
+//            case TIMINGS_ID:
+//                db = dbHelper.getWritableDatabase();
+//                long timingId = TimingsContact.getTimingId(uri);
+//                // find task with the id first
+//                selectionForDelete = TimingsContact.Columns._ID + " = " + timingId;
+//
+//                if (selection != null && selection.length() > 0) {
+//                    selectionForDelete += " AND (" + selection + ")";
+//                }
+//                count = db.delete(TasksContract.TABLE_NAME, selectionForDelete, selectionArgs);
+//                break;
+            default:
+                throw new IllegalArgumentException("unknown uri: uri");
+        }
+        Log.d(TAG, "Deletion done, returning: " + count);
+        return count;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        Log.d(TAG, "update called with uri " + uri);
+        final int match = sUriMatcher.match(uri);
+        Log.d(TAG, "match is " + match);
+
+        final SQLiteDatabase db;
+        int count;
+        String selectionForUpdate;
+
+        // for now only takes id as type
+        switch (match) {
+            case TASKS:
+                db = dbHelper.getWritableDatabase();
+                count = db.update(TasksContract.TABLE_NAME, values, selection, selectionArgs);
+                break;
+
+            case TASKS_ID:
+                db = dbHelper.getWritableDatabase();
+                long taskId = TasksContract.getTaskId(uri);
+                // find task with the id first
+                selectionForUpdate = TasksContract.Columns._ID + " = " + taskId;
+
+                if (selection != null && selection.length() > 0) {
+                    selectionForUpdate += " AND (" + selection + ")";
+                }
+                count = db.update(TasksContract.TABLE_NAME, values, selectionForUpdate, selectionArgs);
+                break;
+
+//            case TIMINGS:
+//                db = dbHelper.getWritableDatabase();
+//                count = db.update(TimingsContact.TABLE_NAME, values, selection, selectionArgs);
+//                break;
+
+//            case TIMINGS_ID:
+//                db = dbHelper.getWritableDatabase();
+//                long timingId = TimingsContact.getTimingId(uri);
+//                // find task with the id first
+//                selectionForUpdate = TimingsContact.Columns._ID + " = " + timingId;
+//
+//                if (selection != null && selection.length() > 0) {
+//                    selectionForUpdate += " AND (" + selection + ")";
+//                }
+//                count = db.update(TasksContract.TABLE_NAME, values, selectionForUpdate, selectionArgs);
+//                break;
+            default:
+                throw new IllegalArgumentException("unknown uri: uri");
+        }
+        Log.d(TAG, "Update done, returning: " + count);
+        return count;
     }
 }
