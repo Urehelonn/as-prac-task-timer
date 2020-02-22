@@ -108,16 +108,69 @@ public class AppProvider extends ContentProvider {
         return queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
     }
 
+    //    https://developer.android.com/reference/android/content/ContentProvider#getType(android.net.Uri)
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case TASKS:
+                return TasksContract.CONTENT_TYPE;
+            case TASKS_ID:
+                return TasksContract.CONTENT_ITEM_TYPE;
+
+//            case TIMINGS:
+//                return TimingsContract.Timing.CONTENT_TYPE;
+//            case TIMINGS_ID:
+//                return TimingsContract.Timing.CONTENT_ITEM_TYPE;
+//
+//            case TASK_DURATIONS:
+//                return DurationsContract.TaskDuration.CONTENT_TYPE;
+//            case TASK_DURATIONS_ID:
+//                return DurationsContract.TaskDuration.CONTENT_ITEM_TYPE;
+
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        Log.d(TAG, "Insertion with uri: " + uri);
+        final int match = sUriMatcher.match(uri);
+        Log.d(TAG, "match is " + match);
+
+        final SQLiteDatabase db;
+        Uri returnUri;
+        long recordId;
+
+        switch (match) {
+            case TASKS:
+                // call writable db can be really slow, so only call it after URI is granted to be valid
+                db = dbHelper.getWritableDatabase();
+                recordId = db.insert(TasksContract.TABLE_NAME, null, values);
+                if (recordId >= 0) {
+                    returnUri = TasksContract.buildTaskUri(recordId);
+                } else {
+                    throw new android.database.SQLException("Failed to insert into " + uri.toString());
+                }
+                break;
+
+            case TIMINGS:
+//                db = dbHelper.getWritableDatabase();
+//                recordId = db.insert(TimingsContract.Timing.buildTimingUri(recordId));
+//                if (recordId >= 0) {
+//                    returnUri = TimingsContract.Timing.buildTimingUri(recordId);
+//                } else {
+//                    throw new android.database.SQLException("Failed to insert into " + uri.toString());
+//                }
+//                break;
+            default:
+                throw new IllegalArgumentException("unknown uri: uri");
+        }
+        Log.d(TAG, "Exiting insert, returning " + returnUri);
+        return returnUri;
     }
 
     @Override
