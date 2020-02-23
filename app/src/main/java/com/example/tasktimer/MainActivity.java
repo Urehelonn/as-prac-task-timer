@@ -108,8 +108,23 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_settings) {
+            return true;
+        }
+
+        if (id == R.id.menu_addTask) {
+            return true;
+        }
+
+        if (id == R.id.menu_info) {
+            return true;
+        }
+
+        if (id == R.id.menu_showDurations) {
+            return true;
+        }
+
+        if (id == R.id.menu_tester) {
             return true;
         }
 
