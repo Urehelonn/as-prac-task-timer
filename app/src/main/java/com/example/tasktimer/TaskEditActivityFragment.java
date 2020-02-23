@@ -2,6 +2,9 @@ package com.example.tasktimer;
 
 import androidx.fragment.app.Fragment;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,6 +63,53 @@ public class TaskEditActivityFragment extends Fragment {
             Log.d(TAG, "onCreateView: no task, create task start: ");
             mMode = FragmentEditMode.ADD;
         }
+
+        mSubmitBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // if any change, update database
+                int sortOrder;
+                if (mSortOrderInput.length() > 0) {
+                    sortOrder = Integer.parseInt(mSortOrderInput.getText().toString());
+                } else {
+                    sortOrder = 0;
+                }
+                ContentResolver cr = getActivity().getContentResolver();
+                ContentValues cv = new ContentValues();
+
+                switch (mMode) {
+                    case EDIT:
+                        if (!mNameInput.getText().toString().equals(task.getmName())) {
+                            cv.put(TasksContract.Columns.TASKS_NAME, mNameInput.getText().toString());
+                        }
+                        if (!mDescriptionInput.getText().toString().equals(task.getmDescription())) {
+                            cv.put(TasksContract.Columns.TASKS_DESCRIPTION, mDescriptionInput.getText().toString());
+                        }
+                        if (sortOrder != task.getmSortOrder()) {
+                            cv.put(TasksContract.Columns.TASKS_SORTORDER, sortOrder);
+                        }
+                        if (cv.size() != 0) {
+                            Log.d(TAG, "onClick: update task.");
+                            int count = cr.update(TasksContract.buildTaskUri(task.getmId()), cv, null, null);
+                            Log.d(TAG, "onClick: update task done, " + count + " task(s) has been updated.");
+                        }
+                        break;
+
+                    case ADD:
+                        if (mNameInput.length() > 0) {
+                            cv.put(TasksContract.Columns.TASKS_NAME, mNameInput.getText().toString());
+                            cv.put(TasksContract.Columns.TASKS_DESCRIPTION, mDescriptionInput.getText().toString());
+                            cv.put(TasksContract.Columns.TASKS_SORTORDER, mSortOrderInput.getText().toString());
+                            Uri insertionRes = cr.insert(TasksContract.CONTENT_URI, cv);
+                            Log.d(TAG, "onClick: create task done, with uri: " + insertionRes);
+                        }
+                        break;
+                }
+
+                Log.d(TAG, "onClick: Editing done");
+            }
+        });
+        Log.d(TAG, "onCreateView: Exit..............................");
         return view;
     }
 }

@@ -34,13 +34,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-//        String[] projection = {
-//                TasksContract.Columns._ID,
-//                TasksContract.Columns.TASKS_NAME,
-//                TasksContract.Columns.TASKS_DESCRIPTION,
-//                TasksContract.Columns.TASKS_SORTORDER
-//        };
-//        ContentResolver contentResolver = getContentResolver();
+        String[] projection = {
+                TasksContract.Columns._ID,
+                TasksContract.Columns.TASKS_NAME,
+                TasksContract.Columns.TASKS_DESCRIPTION,
+                TasksContract.Columns.TASKS_SORTORDER
+        };
+        ContentResolver contentResolver = getContentResolver();
 
         /*
             **** Example of insertion:
@@ -72,22 +72,22 @@ public class MainActivity extends AppCompatActivity {
                 int count = contentResolver.update(TasksContract.CONTENT_URI, values, selection, args);
          */
 
-//        Cursor cursor = contentResolver.query(
-//                TasksContract.CONTENT_URI,
-//                projection, null, null,
-//                TasksContract.Columns.TASKS_SORTORDER
-//        );
-//
-//        if (cursor != null) {
-//            Log.d(TAG, "onCreate: number of rows: " + cursor.getCount());
-//            while (cursor.moveToNext()) {
-//                for (int i = 0; i < cursor.getColumnCount(); i++) {
-//                    Log.d(TAG, "onCreate: " + cursor.getColumnName(i) + ":" + cursor.getString(i));
-//                }
-//                Log.d(TAG, "onCreate:====================================");
-//            }
-//            cursor.close();
-//        }
+        Cursor cursor = contentResolver.query(
+                TasksContract.CONTENT_URI,
+                projection, null, null,
+                TasksContract.Columns.TASKS_SORTORDER
+        );
+
+        if (cursor != null) {
+            Log.d(TAG, "onCreate: number of rows: " + cursor.getCount());
+            while (cursor.moveToNext()) {
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    Log.d(TAG, "onCreate: " + cursor.getColumnName(i) + ":" + cursor.getString(i));
+                }
+                Log.d(TAG, "onCreate:====================================");
+            }
+            cursor.close();
+        }
     }
 
     @Override
