@@ -1,7 +1,33 @@
 <resources>
-    <string name="app_name">Task TImer</string>
+    <string name="app_name">Task Timer</string>
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- List String -->
+    <string name="list_noTask">No Task Selected.</string>
+
+    <!-- Menu String -->
+    <string name="menu_addTask">Add Task</string>
+    <string name="menu_showDurations">Duration Report</string>
+    <string name="menu_setting">Setting</string>
+    <string name="menu_info">Info</string>
+    <string name="menu_tester">Testing Case Generate</string>
+
+    <!--  Task Item String -->
+    <string name="task_item_title">Task Title</string>
+    <string name="task_item_description">Task description blah blah blah....</string>
+    <string name="task_item_edit">Task Edit</string>
+    <string name="task_item_removal">Task Delete</string>
+
+    <!--  Task Edit Page String -->
+    <string name="task_edit_title_hint">Task Title Required</string>
+    <string name="task_edit_description_hint">Task description (optional)</string>
+    <string name="task_edit_sort_hint">Task Sort Order Number (default as 0)</string>
+    <string name="task_edit_submit">Submit</string>
+    <string name="title_activity_task_edit">TaskEditActivity</string>
+    <string name="task_quick_tip_title">*Quick Tip:</string>
+    <string name="task_quick_tip">Use the add button (+) in the tool bar above to create new tasks.
+                    \n\nTasks with lower sort orders will be placed higher up the list.
+                    \nTasks with the same sort order will be sorted alphabetically.
+                    \n\nTapping a task will start the timer for that task (and will stop the time for current task that is being timed.)</string>
+
 </resources>

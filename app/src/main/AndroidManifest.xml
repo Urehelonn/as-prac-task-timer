@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.tasktimer">
 
     <dist:module dist:instant="true" />
@@ -22,9 +23,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TaskEditActivity"
+            android:label="@string/title_activity_task_edit"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.tasktimer.MainActivity" />
+        </activity>
+
         <provider
-            android:name="com.example.tasktimer.AppProvider"
+            android:name=".AppProvider"
             android:authorities="com.example.tasktimer.provider"
             android:exported="false" />
     </application>
+
 </manifest>
