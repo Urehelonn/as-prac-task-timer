@@ -2,6 +2,7 @@ package com.example.tasktimer;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -21,6 +22,9 @@ import com.google.android.material.snackbar.Snackbar;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private boolean mTwoPane = false;
+
+    private static final String TASK_EDIT_FRAGMENT = "TaskEditFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +33,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String[] projection = {
-                TasksContract.Columns._ID,
-                TasksContract.Columns.TASKS_NAME,
-                TasksContract.Columns.TASKS_DESCRIPTION,
-                TasksContract.Columns.TASKS_SORTORDER
-        };
-        ContentResolver contentResolver = getContentResolver();
+
+//        String[] projection = {
+//                TasksContract.Columns._ID,
+//                TasksContract.Columns.TASKS_NAME,
+//                TasksContract.Columns.TASKS_DESCRIPTION,
+//                TasksContract.Columns.TASKS_SORTORDER
+//        };
+//        ContentResolver contentResolver = getContentResolver();
 
         /*
             **** Example of insertion:
@@ -67,22 +72,22 @@ public class MainActivity extends AppCompatActivity {
                 int count = contentResolver.update(TasksContract.CONTENT_URI, values, selection, args);
          */
 
-        Cursor cursor = contentResolver.query(
-                TasksContract.CONTENT_URI,
-                projection, null, null,
-                TasksContract.Columns.TASKS_SORTORDER
-        );
-
-        if (cursor != null) {
-            Log.d(TAG, "onCreate: number of rows: " + cursor.getCount());
-            while (cursor.moveToNext()) {
-                for (int i = 0; i < cursor.getColumnCount(); i++) {
-                    Log.d(TAG, "onCreate: " + cursor.getColumnName(i) + ":" + cursor.getString(i));
-                }
-                Log.d(TAG, "onCreate:====================================");
-            }
-            cursor.close();
-        }
+//        Cursor cursor = contentResolver.query(
+//                TasksContract.CONTENT_URI,
+//                projection, null, null,
+//                TasksContract.Columns.TASKS_SORTORDER
+//        );
+//
+//        if (cursor != null) {
+//            Log.d(TAG, "onCreate: number of rows: " + cursor.getCount());
+//            while (cursor.moveToNext()) {
+//                for (int i = 0; i < cursor.getColumnCount(); i++) {
+//                    Log.d(TAG, "onCreate: " + cursor.getColumnName(i) + ":" + cursor.getString(i));
+//                }
+//                Log.d(TAG, "onCreate:====================================");
+//            }
+//            cursor.close();
+//        }
     }
 
     @Override
@@ -99,26 +104,41 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.menu_settings) {
-            return true;
-        }
+        switch (id) {
+            case R.id.menu_addTask:
+                taskEditRequest(null);
+                break;
 
-        if (id == R.id.menu_addTask) {
-            return true;
-        }
+            case R.id.menu_info:
+                break;
 
-        if (id == R.id.menu_info) {
-            return true;
-        }
+            case R.id.menu_showDurations:
+                break;
 
-        if (id == R.id.menu_showDurations) {
-            return true;
-        }
+            case R.id.menu_settings:
+                break;
 
-        if (id == R.id.menu_tester) {
-            return true;
+            case R.id.menu_tester:
+                break;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    private void taskEditRequest(Task task) {
+        Log.d(TAG, "taskEditRequest: starts ----------------------------");
+        if (mTwoPane) {
+            Log.d(TAG, "taskEditRequest: in two-pane mode (tablet)");
+        } else {
+            Log.d(TAG, "taskEditRequest: in single-pane mode(phone)");
+            // if single-pane mode switch activity
+            Intent detailIntent = new Intent(this, TaskEditActivity.class);
+            if (task != null) {
+                // edit task
+                detailIntent.putExtra(Task.class.getSimpleName(), task);
+            }
+            // else add new task
+            startActivity(detailIntent);
+        }
+        Log.d(TAG, "taskEditRequest: done ----------------------------");
     }
 }
