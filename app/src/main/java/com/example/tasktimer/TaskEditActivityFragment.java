@@ -33,13 +33,13 @@ public class TaskEditActivityFragment extends Fragment {
     private Button mSubmitBt;
 
     public TaskEditActivityFragment() {
-        Log.d(TAG, "TaskEditActivityFragment: constructor :::::::::::::::::");
+        Log.d(TAG, "TaskEditActivityFragment: constructor");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "TaskEditActivityFragment: created: ");
+//        Log.d(TAG, "TaskEditActivityFragment: created: ");
         View view = inflater.inflate(R.layout.fragment_task_edit, container, false);
         mNameInput = view.findViewById(R.id.task_title);
         mDescriptionInput = view.findViewById(R.id.task_description);
