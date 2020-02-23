@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Task TImer</string>
+    <string name="app_name">Task Timer</string>
     <string name="action_settings">Settings</string>
 
     <!-- List String -->
@@ -23,5 +23,6 @@
     <string name="task_edit_description_hint">Task description (optional)</string>
     <string name="task_edit_sort_hint">Task Sort Required</string>
     <string name="task_edit_submit">Submit</string>
+    <string name="title_activity_task_edit">TaskEditActivity</string>
 
 </resources>

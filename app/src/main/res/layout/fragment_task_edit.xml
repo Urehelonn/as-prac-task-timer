@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".TaskEditActivityFragment"
+    tools:showIn="@layout/activity_task_edit">
 
     <EditText
         android:id="@+id/task_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="@string/task_edit_title_hint"
         android:autofillHints=""
+        android:hint="@string/task_edit_title_hint"
+        android:inputType="text"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="26sp" />
 
@@ -17,9 +21,9 @@
         android:id="@+id/task_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autofillHints=""
         android:hint="@string/task_edit_description_hint"
         android:inputType="text|textMultiLine"
-        android:autofillHints=""
         android:textColor="@color/colorPrimary"
         android:textSize="18sp" />
 
@@ -27,9 +31,9 @@
         android:id="@+id/task_sortorder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="@string/task_edit_sort_hint"
         android:autofillHints=""
+        android:hint="@string/task_edit_sort_hint"
+        android:inputType="number"
         android:textColor="@color/design_default_color_primary" />
 
     <Button
@@ -37,5 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@android:drawable/ic_menu_save"
-        android:text="@string/task_edit_submit"/>
+        android:layout_marginTop="15dp"
+        android:text="@string/task_edit_submit" />
 </LinearLayout>
