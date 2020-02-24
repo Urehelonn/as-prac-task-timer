@@ -1,6 +1,7 @@
 package com.example.tasktimer;
 
 
+import android.content.ContentResolver;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -63,7 +64,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         String[] projection = {
                 TasksContract.Columns._ID, TasksContract.Columns.TASKS_NAME,
                 TasksContract.Columns.TASKS_DESCRIPTION, TasksContract.Columns.TASKS_SORTORDER};
-        String inOrder = TasksContract.Columns.TASKS_SORTORDER + "," + TasksContract.Columns.TASKS_NAME + " COLLATE NOCASE";
+        String inOrder = TasksContract.Columns.TASKS_SORTORDER + "," + TasksContract.Columns.TASKS_NAME;
 
         switch (id) {
             case LOADER_ID:

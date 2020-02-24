@@ -106,7 +106,7 @@ public class AppProvider extends ContentProvider {
         }
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 //        return queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-        Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder+" COLLATE NOCASE");
         Log.d(TAG, "query: rows in returned cursor = " + cursor.getCount());
         // check changes observation
         cursor.setNotificationUri(getContext().getContentResolver(), uri);

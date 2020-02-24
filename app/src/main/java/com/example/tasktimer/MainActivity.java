@@ -15,13 +15,16 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity implements CursorRecyclerViewAdapter.OnTaskClickListener{
+public class MainActivity extends AppCompatActivity implements CursorRecyclerViewAdapter.OnTaskClickListener {
 
     private static final String TAG = "MainActivity";
+    // landscape mode provide not only the task list, task detail as well
     private boolean mTwoPane = false;
 
     private static final String TASK_EDIT_FRAGMENT = "TaskEditFragment";
@@ -33,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (findViewById(R.id.task_detail_container) != null) {
+            mTwoPane = true;
+        }
 //        String[] projection = {
 //                TasksContract.Columns._ID,
 //                TasksContract.Columns.TASKS_NAME,
@@ -83,10 +89,11 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
 //                for (int i = 0; i < cursor.getColumnCount(); i++) {
 //                    Log.d(TAG, "onCreate: " + cursor.getColumnName(i) + ":" + cursor.getString(i));
 //                }
-//                Log.d(TAG, "onCreate:====================================");
+//                Log.d(TAG, "onCreate: get records ====================================");
 //            }
 //            cursor.close();
 //        }
+
     }
 
     @Override
@@ -130,15 +137,25 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
 
     @Override
     public void onDeleteClick(Task task) {
-		getContentResolver().delete(TasksContract.buildTaskUri(task.getmId()),null,null);
+        getContentResolver().delete(TasksContract.buildTaskUri(task.getmId()), null, null);
     }
 
     private void taskEditRequest(Task task) {
 //        Log.d(TAG, "taskEditRequest: starts ----------------------------");
         if (mTwoPane) {
-            Log.d(TAG, "taskEditRequest: in two-pane mode (tablet)");
+            Log.d(TAG, "taskEditRequest: in two-pane mode (landscape)");
+            TaskEditActivityFragment frag = new TaskEditActivityFragment();
+            // extract task information to place into task detail container
+            Bundle arguments = new Bundle();
+            arguments.putSerializable(Task.class.getSimpleName(), task);
+            frag.setArguments(arguments);
+
+            FragmentManager fManager = getSupportFragmentManager();
+            FragmentTransaction ft = fManager.beginTransaction();
+            ft.replace(R.id.task_detail_container, frag);
+            ft.commit();
         } else {
-            Log.d(TAG, "taskEditRequest: in single-pane mode(phone)");
+            Log.d(TAG, "taskEditRequest: in single-pane mode(portrait)");
             // if single-pane mode switch activity
             Intent detailIntent = new Intent(this, TaskEditActivity.class);
             if (task != null) {
