@@ -32,12 +32,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private CursorRecyclerViewAdapter mAdapter; // adapter reference
 
     public MainActivityFragment() {
-        Log.d(TAG, "MainActivityFragment: starts -----------------------------");
+//        Log.d(TAG, "MainActivityFragment: starts -----------------------------");
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onActivityCreated: starts ------------------>>>>>>>>>>>>>");
+//        Log.d(TAG, "onActivityCreated: starts ------------------>>>>>>>>>>>>>");
         super.onActivityCreated(savedInstanceState);
         LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this);
     }
@@ -45,15 +45,15 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreatedView: starts ------------------");
+//        Log.d(TAG, "onCreatedView: starts ------------------");
         // create view with list to fill db data into container
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         RecyclerView rv = view.findViewById(R.id.task_list);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new CursorRecyclerViewAdapter(null);
+        mAdapter = new CursorRecyclerViewAdapter(null, (CursorRecyclerViewAdapter.OnTaskClickListener) getActivity());
         rv.setAdapter(mAdapter);
 
-        Log.d(TAG, "onCreatedView: returned view ------------------");
+//        Log.d(TAG, "onCreatedView: returned view ------------------");
         return view;
     }
 
@@ -63,7 +63,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         String[] projection = {
                 TasksContract.Columns._ID, TasksContract.Columns.TASKS_NAME,
                 TasksContract.Columns.TASKS_DESCRIPTION, TasksContract.Columns.TASKS_SORTORDER};
-        String inOrder = TasksContract.Columns.TASKS_SORTORDER + ", " + TasksContract.Columns.TASKS_NAME;
+        String inOrder = TasksContract.Columns.TASKS_SORTORDER + "," + TasksContract.Columns.TASKS_NAME + " COLLATE NOCASE";
 
         switch (id) {
             case LOADER_ID:
@@ -76,17 +76,17 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "Entering onLoadFinished");
+//        Log.d(TAG, "Entering onLoadFinished");
 
         // retrieve data from older cursor
         mAdapter.swapCursor(data);
         int count = mAdapter.getItemCount();
-        Log.d(TAG, "onLoadFinished with count: " + count);
+//        Log.d(TAG, "onLoadFinished with count: " + count);
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        Log.d(TAG, "onLoaderReset starts: ---------------->>>>>>>><<<<<<<<-----------------");
+//        Log.d(TAG, "onLoaderReset starts: ---------------->>>>>>>><<<<<<<<-----------------");
         // close cursor
         mAdapter.swapCursor(null);
     }

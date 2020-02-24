@@ -14,15 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewAdapter.TaskViewHolder> {
     private static final String TAG = "CursorRecyclerViewAdapt";
     private Cursor mCursor;
+    private OnTaskClickListener mListener;
 
-    public CursorRecyclerViewAdapter(Cursor cursor) {
-        Log.d(TAG, "CursorRecyclerViewAdapter: Constructor called -----------------=================");
+    interface OnTaskClickListener {
+        void onEditClick(Task task);
+
+        void onDeleteClick(Task task);
+    }
+
+    public CursorRecyclerViewAdapter(Cursor cursor, OnTaskClickListener listener) {
+//        Log.d(TAG, "CursorRecyclerViewAdapter: Constructor called -----------------=================");
         mCursor = cursor;
+        mListener = listener;
     }
 
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder: new view requested");
+//        Log.d(TAG, "onCreateViewHolder: new view requested");
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_item, parent, false);
         return new TaskViewHolder(view);
@@ -30,7 +38,7 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
 
     @Override
     public void onBindViewHolder(TaskViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: starts");
+//        Log.d(TAG, "onBindViewHolder: starts");
 
 //        when db is empty, give short guide so users can start add their first task
         if (mCursor == null || mCursor.getCount() == 0) {
@@ -43,12 +51,40 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
             if (!mCursor.moveToPosition(position)) {
                 throw new IllegalStateException("Could not move cursor to position " + position + "!");
             }
-            holder.name.setText(mCursor.getString(mCursor.getColumnIndex(TasksContract.Columns.TASKS_NAME)));
-            holder.description.setText(mCursor.getString(mCursor.getColumnIndex(TasksContract.Columns.TASKS_DESCRIPTION)));
+
+            final Task task = new Task(mCursor.getLong(mCursor.getColumnIndex(TasksContract.Columns._ID)),
+                    mCursor.getString(mCursor.getColumnIndex(TasksContract.Columns.TASKS_NAME)),
+                    mCursor.getString(mCursor.getColumnIndex(TasksContract.Columns.TASKS_DESCRIPTION)),
+                    mCursor.getInt(mCursor.getColumnIndex(TasksContract.Columns.TASKS_SORTORDER))
+            );
+            holder.name.setText(task.getmName());
+            holder.description.setText(task.getmDescription());
 //                TODO: add listeners for the buttons
             holder.editBt.setVisibility(View.VISIBLE);
             holder.deleteBt.setVisibility(View.VISIBLE);
 
+            View.OnClickListener btListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick: clicked bt with id " + v.getId() + " with task name as: " + task.getmName());
+                    switch (v.getId()) {
+                        case R.id.task_edit_bt:
+                            if (mListener != null) {
+                                mListener.onEditClick(task);
+                            }
+                            break;
+                        case R.id.task_delete_bt:
+                            if (mListener != null) {
+                                mListener.onDeleteClick(task);
+                            }
+                            break;
+                        default:
+                            Log.d(TAG, "onClick: unexpected button id");
+                    }
+                }
+            };
+            holder.editBt.setOnClickListener(btListener);
+            holder.deleteBt.setOnClickListener(btListener);
         }
     }
 
@@ -84,7 +120,7 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
         } else {
             // notify for data being empty
             Log.d(TAG, "swapCursor: data empty called");
-            notifyItemRangeChanged(0, getItemCount());
+            notifyItemRangeRemoved(0, getItemCount());
         }
         return oldCursor;
     }

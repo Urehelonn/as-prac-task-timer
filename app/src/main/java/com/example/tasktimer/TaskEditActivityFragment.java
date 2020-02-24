@@ -53,9 +53,12 @@ public class TaskEditActivityFragment extends Fragment {
 //            task editing
             Log.d(TAG, "onCreateView: task details found, editing.....");
             task = (Task) arguments.getSerializable(Task.class.getSimpleName());
+            Log.d(TAG, "task name:" + task.getmName());
+            Log.d(TAG, "task description:" + task.getmDescription());
+            Log.d(TAG, "task so:" + task.getmSortOrder());
             mNameInput.setText(task.getmName());
             mDescriptionInput.setText(task.getmDescription());
-            mSortOrderInput.setText(task.getmSortOrder());
+            mSortOrderInput.setText(Integer.toString(task.getmSortOrder()));
             mMode = FragmentEditMode.EDIT;
         } else {
 //            task creating

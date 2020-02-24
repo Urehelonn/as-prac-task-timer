@@ -19,7 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CursorRecyclerViewAdapter.OnTaskClickListener{
 
     private static final String TAG = "MainActivity";
     private boolean mTwoPane = false;
@@ -121,6 +121,16 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onEditClick(Task task) {
+        taskEditRequest(task);
+    }
+
+    @Override
+    public void onDeleteClick(Task task) {
+		getContentResolver().delete(TasksContract.buildTaskUri(task.getmId()),null,null);
     }
 
     private void taskEditRequest(Task task) {

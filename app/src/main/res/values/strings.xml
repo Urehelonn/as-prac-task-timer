@@ -21,7 +21,7 @@
     <!--  Task Edit Page String -->
     <string name="task_edit_title_hint">Task Title Required</string>
     <string name="task_edit_description_hint">Task description (optional)</string>
-    <string name="task_edit_sort_hint">Task Sort Order Number (default as 0)</string>
+    <string name="task_edit_sort_hint">Task Sort Order Number (optional)</string>
     <string name="task_edit_submit">Submit</string>
     <string name="title_activity_task_edit">TaskEditActivity</string>
     <string name="task_quick_tip_title">*Quick Tip:</string>

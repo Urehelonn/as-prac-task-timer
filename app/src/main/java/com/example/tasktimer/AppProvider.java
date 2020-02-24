@@ -105,7 +105,12 @@ public class AppProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        return queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+//        return queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        Log.d(TAG, "query: rows in returned cursor = " + cursor.getCount());
+        // check changes observation
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     //    https://developer.android.com/reference/android/content/ContentProvider#getType(android.net.Uri)
@@ -169,6 +174,13 @@ public class AppProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("unknown uri: uri");
         }
+        if (recordId >= 0) {
+            Log.d(TAG, "insert: Setting notifyChange with " + uri);
+            // notify change using this argument:
+            getContext().getContentResolver().notifyChange(uri, null);
+        } else {
+            Log.d(TAG, "insert: nothing changed");
+        }
         Log.d(TAG, "Exiting insert, returning " + returnUri);
         return returnUri;
     }
@@ -219,6 +231,12 @@ public class AppProvider extends ContentProvider {
 //                break;
             default:
                 throw new IllegalArgumentException("unknown uri: uri");
+        }
+        if (count > 0) {
+            Log.d(TAG, "delete: Setting notifyChange with " + uri);
+            getContext().getContentResolver().notifyChange(uri, null);
+        } else {
+            Log.d(TAG, "delete: nothing deleted.");
         }
         Log.d(TAG, "Deletion done, returning: " + count);
         return count;
@@ -272,6 +290,13 @@ public class AppProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("unknown uri: uri");
         }
+        if (count > 0) {
+            Log.d(TAG, "Update: Setting notifyChange with " + uri);
+            getContext().getContentResolver().notifyChange(uri, null);
+        } else {
+            Log.d(TAG, "Update: nothing Updated.");
+        }
+        Log.d(TAG, "Deletion done, returning: " + count);
         Log.d(TAG, "Update done, returning: " + count);
         return count;
     }
