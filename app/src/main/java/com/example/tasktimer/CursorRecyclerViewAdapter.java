@@ -43,8 +43,8 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
 //        when db is empty, give short guide so users can start add their first task
         if (mCursor == null || mCursor.getCount() == 0) {
             Log.d(TAG, "onBindViewHolder: providing instructions");
-            holder.name.setText(String.valueOf(R.string.task_quick_tip_title));
-            holder.description.setText(String.valueOf(R.string.task_quick_tip));
+            holder.name.setText(R.string.task_quick_tip_title);
+            holder.description.setText(R.string.task_quick_tip);
             holder.editBt.setVisibility(View.GONE);
             holder.deleteBt.setVisibility(View.GONE);
         } else {

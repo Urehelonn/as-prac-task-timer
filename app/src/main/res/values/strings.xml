@@ -30,4 +30,11 @@
                     \nTasks with the same sort order will be sorted alphabetically.
                     \n\nTapping a task will start the timer for that task (and will stop the time for current task that is being timed.)</string>
 
+    <!--    Dialog String   -->
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
+    <string name="delete">Delete</string>
+    <string name="dialog_delete_message">Deleting will also delete all timing data associated with task id %1$d: %2$s.</string>
+
+
 </resources>

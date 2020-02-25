@@ -15,16 +15,20 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity implements CursorRecyclerViewAdapter.OnTaskClickListener{
+public class MainActivity extends AppCompatActivity implements CursorRecyclerViewAdapter.OnTaskClickListener,
+        AppDialog.DialogEvents {
 
     private static final String TAG = "MainActivity";
     private boolean mTwoPane = false;
 
     private static final String TASK_EDIT_FRAGMENT = "TaskEditFragment";
+    private static final int DELETE_DIALOG_ID = 1;
+    private static final String TASKID = "TaskId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +134,19 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
 
     @Override
     public void onDeleteClick(Task task) {
-		getContentResolver().delete(TasksContract.buildTaskUri(task.getmId()),null,null);
+        // add dialog confirmation before delete
+        Log.d(TAG, "onDeleteClick: clicked");
+
+        AppDialog dialog = new AppDialog();
+        Bundle args = new Bundle();
+        args.putInt(AppDialog.DIALOG_ID, DELETE_DIALOG_ID);
+        args.putString(AppDialog.DIALOG_MESSAGE, getString(R.string.dialog_delete_message, task.getmId(), task.getmName()));
+        args.putInt(AppDialog.DIALOG_POSITIVE_RID, R.string.delete);
+
+        args.putLong(TASKID, task.getmId());
+
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), null);
     }
 
     private void taskEditRequest(Task task) {
@@ -149,5 +165,28 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
             startActivity(detailIntent);
         }
 //        Log.d(TAG, "taskEditRequest: done ----------------------------");
+    }
+
+    @Override
+    public void onPositiveDialogResult(int dialogId, Bundle args) {
+        Log.d(TAG, "onPositiveDialogResult: called");
+        Long taskId = args.getLong(TASKID);
+        // avoid getLong crush if task id==0
+        if (BuildConfig.DEBUG && taskId == 0) {
+            throw new AssertionError("Task ID is zero");
+        }
+        getContentResolver().delete(TasksContract.buildTaskUri(taskId), null, null);
+    }
+
+    @Override
+    public void onNegativeDialogResult(int dialogId, Bundle args) {
+        Log.d(TAG, "onNegativeDialogResult: called");
+
+    }
+
+    @Override
+    public void onDialogCancelled(int dialogId) {
+        Log.d(TAG, "onDialogCancelled: called");
+
     }
 }
