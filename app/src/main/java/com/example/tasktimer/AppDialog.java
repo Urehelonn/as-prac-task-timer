@@ -110,12 +110,13 @@ public class AppDialog extends DialogFragment {
             int dialogId = getArguments().getInt(DIALOG_ID);
             mDialogEvents.onDialogCancelled(dialogId);
         }
-//        super.onCancel(dialog);
+//        super.onCancel(dialog); super of onCancel for DialogFragment actually does nothing
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        Log.d(TAG, "onDismiss: called");
-//        super.onDismiss(dialog);
+        // super of onDismiss for DialogFragment has to be called since onDismiss state need to ba update for rotation,
+        // which has been handled by DialogFragment.onDismiss
+        super.onDismiss(dialog);
     }
 }
