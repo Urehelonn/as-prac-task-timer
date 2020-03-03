@@ -187,6 +187,17 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
     @Override
     public void onDialogCancelled(int dialogId) {
         Log.d(TAG, "onDialogCancelled: called");
-
     }
+
+//    @Override
+//    public void onBackPressed(){
+//        Log.d(TAG, "onBackPressed: called");
+//        FragmentManager fm = getSupportFragmentManager();
+//        TaskEditActivityFragment taskEditActivityFragment = (TaskEditActivityFragment) fm.findFragmentById(R.id.task_edit_fragment);
+//        if(taskEditActivityFragment == null || taskEditActivityFragment.canClose()){
+//            super.onBackPressed();
+//        } else {
+//            // when the taskEdit
+//        }
+//    }
 }
