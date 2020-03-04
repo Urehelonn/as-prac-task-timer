@@ -16,6 +16,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,6 +37,11 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (findViewById(R.id.task_detail_container) != null) {
+            mTwoPane = true;
+            Log.d(TAG, "2pane triggered===========================================================");
+        }
 
 //        String[] projection = {
 //                TasksContract.Columns._ID,
@@ -152,9 +158,19 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
     private void taskEditRequest(Task task) {
 //        Log.d(TAG, "taskEditRequest: starts ----------------------------");
         if (mTwoPane) {
-            Log.d(TAG, "taskEditRequest: in two-pane mode (tablet)");
+            Log.d(TAG, "taskEditRequest: in two-pane mode (landscape)");
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            TaskEditActivityFragment taskEditActivityFragment = new TaskEditActivityFragment();
+
+            Bundle args = new Bundle();
+            args.putSerializable(Task.class.getSimpleName(), task);
+            taskEditActivityFragment.setArguments(args);
+
+            fragmentTransaction.add(R.id.fragment_task_edit, taskEditActivityFragment);
+            fragmentTransaction.commit();
         } else {
-            Log.d(TAG, "taskEditRequest: in single-pane mode(phone)");
+            Log.d(TAG, "taskEditRequest: in single-pane mode(portrait)");
             // if single-pane mode switch activity
             Intent detailIntent = new Intent(this, TaskEditActivity.class);
             if (task != null) {

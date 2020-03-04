@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/task_edit_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".TaskEditActivityFragment"
-    tools:showIn="@layout/activity_task_edit">
+    tools:showIn="@layout/activity_task_edit"
+    android:id="@+id/fragment_task_edit">
 
     <EditText
         android:id="@+id/task_title"
