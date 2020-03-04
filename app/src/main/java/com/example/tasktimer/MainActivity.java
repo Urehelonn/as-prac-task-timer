@@ -162,13 +162,14 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             TaskEditActivityFragment taskEditActivityFragment = new TaskEditActivityFragment();
-
+            // use Bundle to store task information to pass to fragment
             Bundle args = new Bundle();
             args.putSerializable(Task.class.getSimpleName(), task);
             taskEditActivityFragment.setArguments(args);
+            // those bundle information will be retrieved by fragment_task_edit onCreate next
 
             // add fragment into container
-            fragmentTransaction.add(R.id.task_detail_container, taskEditActivityFragment);
+            fragmentTransaction.replace(R.id.task_detail_container, taskEditActivityFragment);
             fragmentTransaction.commit();
         } else {
             Log.d(TAG, "taskEditRequest: in single-pane mode(portrait)");

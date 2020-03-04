@@ -46,7 +46,8 @@ public class TaskEditActivityFragment extends Fragment {
         mSortOrderInput = view.findViewById(R.id.task_sortorder);
         mSubmitBt = view.findViewById(R.id.task_edit_submit_bt);
 
-        Bundle arguments = getActivity().getIntent().getExtras();
+        // get values passed from bundle from activity
+        Bundle arguments = getArguments();
 
         final Task task;
         if (arguments != null) {
