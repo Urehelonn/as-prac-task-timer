@@ -167,7 +167,8 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
             args.putSerializable(Task.class.getSimpleName(), task);
             taskEditActivityFragment.setArguments(args);
 
-            fragmentTransaction.add(R.id.fragment_task_edit, taskEditActivityFragment);
+            // add fragment into container
+            fragmentTransaction.add(R.id.task_detail_container, taskEditActivityFragment);
             fragmentTransaction.commit();
         } else {
             Log.d(TAG, "taskEditRequest: in single-pane mode(portrait)");
