@@ -16,6 +16,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,6 +37,11 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (findViewById(R.id.task_detail_container) != null) {
+            mTwoPane = true;
+            Log.d(TAG, "2pane triggered===========================================================");
+        }
 
 //        String[] projection = {
 //                TasksContract.Columns._ID,
@@ -152,9 +158,20 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
     private void taskEditRequest(Task task) {
 //        Log.d(TAG, "taskEditRequest: starts ----------------------------");
         if (mTwoPane) {
-            Log.d(TAG, "taskEditRequest: in two-pane mode (tablet)");
+            Log.d(TAG, "taskEditRequest: in two-pane mode (landscape)");
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            TaskEditActivityFragment taskEditActivityFragment = new TaskEditActivityFragment();
+
+            Bundle args = new Bundle();
+            args.putSerializable(Task.class.getSimpleName(), task);
+            taskEditActivityFragment.setArguments(args);
+
+            // add fragment into container
+            fragmentTransaction.add(R.id.task_detail_container, taskEditActivityFragment);
+            fragmentTransaction.commit();
         } else {
-            Log.d(TAG, "taskEditRequest: in single-pane mode(phone)");
+            Log.d(TAG, "taskEditRequest: in single-pane mode(portrait)");
             // if single-pane mode switch activity
             Intent detailIntent = new Intent(this, TaskEditActivity.class);
             if (task != null) {
@@ -187,6 +204,17 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
     @Override
     public void onDialogCancelled(int dialogId) {
         Log.d(TAG, "onDialogCancelled: called");
-
     }
+
+//    @Override
+//    public void onBackPressed(){
+//        Log.d(TAG, "onBackPressed: called");
+//        FragmentManager fm = getSupportFragmentManager();
+//        TaskEditActivityFragment taskEditActivityFragment = (TaskEditActivityFragment) fm.findFragmentById(R.id.task_edit_fragment);
+//        if(taskEditActivityFragment == null || taskEditActivityFragment.canClose()){
+//            super.onBackPressed();
+//        } else {
+//            // when the taskEdit
+//        }
+//    }
 }
