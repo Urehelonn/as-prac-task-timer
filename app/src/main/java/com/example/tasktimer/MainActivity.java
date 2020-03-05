@@ -15,6 +15,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -22,7 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements CursorRecyclerViewAdapter.OnTaskClickListener,
-        AppDialog.DialogEvents {
+        AppDialog.DialogEvents, TaskEditActivityFragment.OnSaveClicked {
 
     private static final String TAG = "MainActivity";
     private boolean mTwoPane = false;
@@ -159,8 +160,6 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
 //        Log.d(TAG, "taskEditRequest: starts ----------------------------");
         if (mTwoPane) {
             Log.d(TAG, "taskEditRequest: in two-pane mode (landscape)");
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             TaskEditActivityFragment taskEditActivityFragment = new TaskEditActivityFragment();
             // use Bundle to store task information to pass to fragment
             Bundle args = new Bundle();
@@ -168,9 +167,8 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
             taskEditActivityFragment.setArguments(args);
             // those bundle information will be retrieved by fragment_task_edit onCreate next
 
-            // add fragment into container
-            fragmentTransaction.replace(R.id.task_detail_container, taskEditActivityFragment);
-            fragmentTransaction.commit();
+            // insert fragment using fragment manager
+            getSupportFragmentManager().beginTransaction().replace(R.id.task_detail_container, taskEditActivityFragment).commit();
         } else {
             Log.d(TAG, "taskEditRequest: in single-pane mode(portrait)");
             // if single-pane mode switch activity
@@ -183,6 +181,17 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
             startActivity(detailIntent);
         }
 //        Log.d(TAG, "taskEditRequest: done ----------------------------");
+    }
+
+    @Override
+    public void onSaveClicked() {
+        // remove task edit fragment after change saved
+        Log.d(TAG, "onSaveClicked: starts");
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment frag = fm.findFragmentById(R.id.task_detail_container);
+        if (frag != null) {
+            getSupportFragmentManager().beginTransaction().remove(frag).commit();
+        }
     }
 
     @Override

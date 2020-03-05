@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.view.View;
 
-public class TaskEditActivity extends AppCompatActivity {
+public class TaskEditActivity extends AppCompatActivity implements TaskEditActivityFragment.OnSaveClicked {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,4 +39,9 @@ public class TaskEditActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    @Override
+    public void onSaveClicked() {
+        // close current task edit activity
+        finish();
+    }
 }
