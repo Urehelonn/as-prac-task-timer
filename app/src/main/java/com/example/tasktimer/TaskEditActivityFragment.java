@@ -2,8 +2,10 @@ package com.example.tasktimer;
 
 import androidx.fragment.app.Fragment;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,9 +33,37 @@ public class TaskEditActivityFragment extends Fragment {
     private EditText mDescriptionInput;
     private EditText mSortOrderInput;
     private Button mSubmitBt;
+    private OnSaveClicked mSaveListener = null;
+
+    // in order to add remove fragment after submit function
+    interface OnSaveClicked {
+        void onSaveClicked();
+    }
 
     public TaskEditActivityFragment() {
         Log.d(TAG, "TaskEditActivityFragment: constructor");
+    }
+
+    // set onSaveClicked using onAttach
+    @Override
+    public void onAttach(Context context) {
+        Log.d(TAG, "onAttach: starts");
+        super.onAttach(context);
+        // activities containing this fragment must implement it's callbacks
+        Activity activity = getActivity();
+        if (!(activity instanceof OnSaveClicked)) {
+            throw new ClassCastException(activity.getClass().getSimpleName()
+                    + " must implement AddEditActivityFragment.OnSaveClicked interface");
+        }
+        mSaveListener = (OnSaveClicked) getActivity();
+    }
+
+    // unsubscribe the listener when fragment terminate
+    @Override
+    public void onDetach() {
+        Log.d(TAG, "onDetach: starts");
+        super.onDetach();
+        mSaveListener = null;
     }
 
     @Override
@@ -111,6 +141,9 @@ public class TaskEditActivityFragment extends Fragment {
                 }
 
                 Log.d(TAG, "onClick: Editing done");
+                if (mSaveListener != null) {
+                    mSaveListener.onSaveClicked();
+                }
             }
         });
         Log.d(TAG, "onCreateView: Exit..............................");
