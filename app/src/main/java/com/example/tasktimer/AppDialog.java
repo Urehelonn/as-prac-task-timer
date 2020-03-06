@@ -13,6 +13,7 @@ public class AppDialog extends DialogFragment {
 
     public static final String TAG = "AppDialog";
 
+    // this field is used to
     public static final String DIALOG_ID = "id";
     public static final String DIALOG_MESSAGE = "message";
     public static final String DIALOG_POSITIVE_RID = "positive_rid";

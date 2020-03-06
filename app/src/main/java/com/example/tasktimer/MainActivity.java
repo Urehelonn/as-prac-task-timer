@@ -1,26 +1,15 @@
 package com.example.tasktimer;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements CursorRecyclerViewAdapter.OnTaskClickListener,
         AppDialog.DialogEvents, TaskEditActivityFragment.OnSaveClicked {
@@ -28,8 +17,8 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
     private static final String TAG = "MainActivity";
     private boolean mTwoPane = false;
 
-    private static final String TASK_EDIT_FRAGMENT = "TaskEditFragment";
-    private static final int DELETE_DIALOG_ID = 1;
+    private static final int DIALOG_ID_DELETE = 1;
+    private static final int DIALOG_ID_CANCEL_EDIT = 2;
     private static final String TASKID = "TaskId";
 
     @Override
@@ -146,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
 
         AppDialog dialog = new AppDialog();
         Bundle args = new Bundle();
-        args.putInt(AppDialog.DIALOG_ID, DELETE_DIALOG_ID);
+        args.putInt(AppDialog.DIALOG_ID, DIALOG_ID_DELETE);
         args.putString(AppDialog.DIALOG_MESSAGE, getString(R.string.dialog_delete_message, task.getmId(), task.getmName()));
         args.putInt(AppDialog.DIALOG_POSITIVE_RID, R.string.delete);
 
@@ -197,18 +186,28 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
     @Override
     public void onPositiveDialogResult(int dialogId, Bundle args) {
         Log.d(TAG, "onPositiveDialogResult: called");
-        Long taskId = args.getLong(TASKID);
-        // avoid getLong crush if task id==0
-        if (BuildConfig.DEBUG && taskId == 0) {
-            throw new AssertionError("Task ID is zero");
+        switch (dialogId) {
+            case DIALOG_ID_DELETE:
+                Long taskId = args.getLong("TaskId");
+                // avoid getLong crush if task id==0
+                if (BuildConfig.DEBUG && taskId == 0) throw new AssertionError("TaskID is zero");
+                getContentResolver().delete(TasksContract.buildTaskUri(taskId), null, null);
+                break;
+            case DIALOG_ID_CANCEL_EDIT:
+                break;
         }
-        getContentResolver().delete(TasksContract.buildTaskUri(taskId), null, null);
     }
 
     @Override
     public void onNegativeDialogResult(int dialogId, Bundle args) {
         Log.d(TAG, "onNegativeDialogResult: called");
-
+        switch (dialogId) {
+            case DIALOG_ID_DELETE:
+                break;
+            case DIALOG_ID_CANCEL_EDIT:
+                finish();
+                break;
+        }
     }
 
     @Override
@@ -216,15 +215,24 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
         Log.d(TAG, "onDialogCancelled: called");
     }
 
-//    @Override
-//    public void onBackPressed(){
-//        Log.d(TAG, "onBackPressed: called");
-//        FragmentManager fm = getSupportFragmentManager();
-//        TaskEditActivityFragment taskEditActivityFragment = (TaskEditActivityFragment) fm.findFragmentById(R.id.task_edit_fragment);
-//        if(taskEditActivityFragment == null || taskEditActivityFragment.canClose()){
-//            super.onBackPressed();
-//        } else {
-//            // when the taskEdit
-//        }
-//    }
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: called");
+        FragmentManager fm = getSupportFragmentManager();
+        TaskEditActivityFragment taskEditActivityFragment = (TaskEditActivityFragment) fm.findFragmentById(R.id.task_detail_container);
+        if (taskEditActivityFragment == null || taskEditActivityFragment.canClose()) {
+            super.onBackPressed();
+        } else {
+            // when still in taskEdit, show dialog for exit confirmation
+            AppDialog dialog = new AppDialog();
+            Bundle args = new Bundle();
+            args.putInt(AppDialog.DIALOG_ID, DIALOG_ID_CANCEL_EDIT);
+            args.putString(AppDialog.DIALOG_MESSAGE, getString(R.string.cancel_edit_message));
+            args.putInt(AppDialog.DIALOG_POSITIVE_RID, R.string.cancel_positive);
+            args.putInt(AppDialog.DIALOG_NEGATIVE_RID, R.string.cancel_negative);
+
+            dialog.setArguments(args);
+            dialog.show(fm, null);
+        }
+    }
 }

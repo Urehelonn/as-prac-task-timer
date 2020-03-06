@@ -28,7 +28,6 @@ public class TaskEditActivityFragment extends Fragment {
     }
 
     private FragmentEditMode mMode;
-
     private EditText mNameInput;
     private EditText mDescriptionInput;
     private EditText mSortOrderInput;
@@ -42,6 +41,10 @@ public class TaskEditActivityFragment extends Fragment {
 
     public TaskEditActivityFragment() {
         Log.d(TAG, "TaskEditActivityFragment: constructor");
+    }
+
+    public boolean canClose(){
+        return false;
     }
 
     // set onSaveClicked using onAttach

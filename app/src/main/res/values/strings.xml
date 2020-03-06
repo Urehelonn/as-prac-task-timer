@@ -35,6 +35,9 @@
     <string name="cancel">CANCEL</string>
     <string name="delete">Delete</string>
     <string name="dialog_delete_message">Deleting will also delete all timing data associated with task id %1$d: %2$s.</string>
+    <string name="cancel_edit_message">Are you sure you want to leave current task\'s editing process?</string>
+    <string name="cancel_positive">Stay</string>
+    <string name="cancel_negative">Leave</string>
 
 
 </resources>
