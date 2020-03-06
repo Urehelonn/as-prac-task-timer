@@ -1,11 +1,15 @@
 package com.example.tasktimer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -19,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
 
     private static final int DIALOG_ID_DELETE = 1;
     private static final int DIALOG_ID_CANCEL_EDIT = 2;
+
+    private AlertDialog mAlertDialog = null;
     private static final String TASKID = "TaskId";
 
     @Override
@@ -33,60 +39,56 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
             Log.d(TAG, "2pane triggered===========================================================");
         }
 
-//        String[] projection = {
-//                TasksContract.Columns._ID,
-//                TasksContract.Columns.TASKS_NAME,
-//                TasksContract.Columns.TASKS_DESCRIPTION,
-//                TasksContract.Columns.TASKS_SORTORDER
-//        };
-//        ContentResolver contentResolver = getContentResolver();
-
         /*
+        String[] projection = {
+                TasksContract.Columns._ID,
+                TasksContract.Columns.TASKS_NAME,
+                TasksContract.Columns.TASKS_DESCRIPTION,
+                TasksContract.Columns.TASKS_SORTORDER
+        };
+        ContentResolver contentResolver = getContentResolver();
+
             **** Example of insertion:
                 ContentValues values = new ContentValues();
                 values.put(TasksContract.Columns.TASKS_NAME, "Insertion.");
                 values.put(TasksContract.Columns.TASKS_DESCRIPTION, "Insertion test.");
                 values.put(TasksContract.Columns.TASKS_SORTORDER, 99);
                 int count = contentResolver.delete(TasksContract.buildTaskUri(4), null, null);
-         */
 
-        /*
+
             **** Example of deletion:
                 ContentValues values = new ContentValues();
                 int count = contentResolver.delete(TasksContract.buildTaskUri(4), null, null);
-         */
 
-        /*
             **** Example of update multiple:
                 String selection = TasksContract.Columns.TASKS_SORTORDER + " = " + 2;
                 int count = contentResolver.update(TasksContract.CONTENT_URI, values, selection, null);
-        */
 
-        /*
             **** Example of usage for args[] param:
                 ContentValues values = new ContentValues();
                 values.put(TasksContract.Columns.TASKS_DESCRIPTION, "For deletion.");
                 String selection = TasksContract.Columns.TASKS_SORTORDER + " = ?";
                 String[] args = {"99"};
                 int count = contentResolver.update(TasksContract.CONTENT_URI, values, selection, args);
-         */
 
-//        Cursor cursor = contentResolver.query(
-//                TasksContract.CONTENT_URI,
-//                projection, null, null,
-//                TasksContract.Columns.TASKS_SORTORDER
-//        );
-//
-//        if (cursor != null) {
-//            Log.d(TAG, "onCreate: number of rows: " + cursor.getCount());
-//            while (cursor.moveToNext()) {
-//                for (int i = 0; i < cursor.getColumnCount(); i++) {
-//                    Log.d(TAG, "onCreate: " + cursor.getColumnName(i) + ":" + cursor.getString(i));
-//                }
-//                Log.d(TAG, "onCreate:====================================");
-//            }
-//            cursor.close();
-//        }
+        Cursor cursor = contentResolver.query(
+                TasksContract.CONTENT_URI,
+                projection, null, null,
+                TasksContract.Columns.TASKS_SORTORDER
+        );
+
+        if (cursor != null) {
+            Log.d(TAG, "onCreate: number of rows: " + cursor.getCount());
+            while (cursor.moveToNext()) {
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    Log.d(TAG, "onCreate: " + cursor.getColumnName(i) + ":" + cursor.getString(i));
+                }
+                Log.d(TAG, "onCreate:====================================");
+            }
+            cursor.close();
+        }
+
+         */
     }
 
     @Override
@@ -109,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
                 break;
 
             case R.id.menu_info:
+                showAboutDialog();
                 break;
 
             case R.id.menu_showDurations:
@@ -121,6 +124,23 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showAboutDialog() {
+        // inject layout into dialog
+        @SuppressLint("InflateParams") View messageView = getLayoutInflater().inflate(R.layout.about, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(messageView);
+        builder.setTitle(R.string.app_name);
+        builder.setIcon(R.mipmap.ic_launcher);
+        mAlertDialog = builder.create();
+        mAlertDialog.setCanceledOnTouchOutside(true);
+
+        TextView tv = messageView.findViewById(R.id.about_version);
+        String versionText = "v" + BuildConfig.VERSION_NAME;
+        tv.setText(versionText);
+
+        mAlertDialog.show();
     }
 
     @Override

@@ -22,20 +22,17 @@ public class TaskEditActivity extends AppCompatActivity implements TaskEditActiv
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                Log.d(TAG, "onOptionsItemSelected: on home bt pressed");
-                TaskEditActivityFragment frag = (TaskEditActivityFragment) getSupportFragmentManager().findFragmentById(R.id.content_task_edit);
-                if (frag.canClose()) {
-                    return super.onOptionsItemSelected(item);
-                } else {
-                    showConfirmationDialog();
-                    return true;
-                }
-
-            default: {
+        if (item.getItemId() == android.R.id.home) {
+            Log.d(TAG, "onOptionsItemSelected: on home bt pressed");
+            TaskEditActivityFragment frag = (TaskEditActivityFragment) getSupportFragmentManager().findFragmentById(R.id.content_task_edit);
+            if (frag.canClose()) {
                 return super.onOptionsItemSelected(item);
+            } else {
+                showConfirmationDialog();
+                return true;
             }
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
