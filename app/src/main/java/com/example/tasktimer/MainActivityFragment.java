@@ -24,11 +24,12 @@ import java.security.InvalidParameterException;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        CursorRecyclerViewAdapter.OnTaskClickListener {
     private static final String TAG = "MainActivityFragment";
 
     // used to identify loader
-    public static final int LOADER_ID = 0;
+    private static final int LOADER_ID = 0;
     private CursorRecyclerViewAdapter mAdapter; // adapter reference
 
     public MainActivityFragment() {
@@ -40,6 +41,33 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 //        Log.d(TAG, "onActivityCreated: starts ------------------>>>>>>>>>>>>>");
         super.onActivityCreated(savedInstanceState);
         LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this);
+    }
+
+    @Override
+    public void onEditClick(@NonNull Task task) {
+        Log.d(TAG, "onEditClick: called");
+        CursorRecyclerViewAdapter.OnTaskClickListener listener = (CursorRecyclerViewAdapter.OnTaskClickListener) getActivity();
+        if (listener != null) {
+            listener.onEditClick(task);
+        }
+    }
+
+    @Override
+    public void onDeleteClick(@NonNull Task task) {
+        Log.d(TAG, "onDeleteClick: called");
+        CursorRecyclerViewAdapter.OnTaskClickListener listener = (CursorRecyclerViewAdapter.OnTaskClickListener) getActivity();
+        if (listener != null) {
+            listener.onDeleteClick(task);
+        }
+    }
+
+    @Override
+    public void onTaskLongClick(@NonNull Task task) {
+        Log.d(TAG, "onTaskLongClick: called");
+        CursorRecyclerViewAdapter.OnTaskClickListener listener = (CursorRecyclerViewAdapter.OnTaskClickListener) getActivity();
+        if (listener != null) {
+            listener.onTaskLongClick(task);
+        }
     }
 
     @Override
@@ -58,6 +86,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
+    @NonNull
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "onCreateLoader: cursor load starts with id: " + id);
         String[] projection = {
@@ -65,13 +94,19 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 TasksContract.Columns.TASKS_DESCRIPTION, TasksContract.Columns.TASKS_SORTORDER};
         String inOrder = TasksContract.Columns.TASKS_SORTORDER + "," + TasksContract.Columns.TASKS_NAME + " COLLATE NOCASE";
 
-        switch (id) {
-            case LOADER_ID:
-                return new CursorLoader(getActivity(), TasksContract.CONTENT_URI, projection,
-                        null, null, inOrder);
-            default:
-                throw new InvalidParameterException(TAG + ".onCreateLoader called with invalid loader id");
+        if (id == LOADER_ID) {
+            return new CursorLoader(getActivity(), TasksContract.CONTENT_URI, projection,
+                    null, null, inOrder);
+        } else {
+            throw new InvalidParameterException(TAG + ".onCreateLoader called with invalid loader id");
         }
+//        switch (id) {
+//            case LOADER_ID:
+//                return new CursorLoader(getActivity(), TasksContract.CONTENT_URI, projection,
+//                        null, null, inOrder);
+//            default:
+//                throw new InvalidParameterException(TAG + ".onCreateLoader called with invalid loader id");
+//        }
     }
 
     @Override

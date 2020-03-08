@@ -31,8 +31,8 @@ public class AppProvider extends ContentProvider {
     public static final int TIMINGS = 200;
     public static final int TIMINGS_ID = 201;
 
-//    private static final int TASK_TIMES = 300;
-//    private static final int TASK_TIMES_ID = 301;
+    private static final int TASK_TIMES = 300;
+    private static final int TASK_TIMES_ID = 301;
 
     public static final int TASK_DURATIONS = 400;
     public static final int TASK_DURATIONS_ID = 401;
@@ -46,11 +46,11 @@ public class AppProvider extends ContentProvider {
         //eg. content://com.example.tasktimer.provider.Tasks/8
         matcher.addURI(CONTENT_AUTHORITY, TasksContract.TABLE_NAME + "/#", TASKS_ID);
 
-//        //eg. content://com.example.tasktimer.provider.Timing
-//        matcher.addURI(CONTENT_AUTHORITY, TimingContract.TABLE_NAME, TIMINGS);
-//        //eg. content://com.example.tasktimer.provider.Timing/8
-//        matcher.addURI(CONTENT_AUTHORITY, TimingContract.TABLE_NAME + "/#", TIMINGS_ID);
-//
+        //eg. content://com.example.tasktimer.provider.Timing
+        matcher.addURI(CONTENT_AUTHORITY, TimingsContract.TABLE_NAME, TIMINGS);
+        //eg. content://com.example.tasktimer.provider.Timing/8
+        matcher.addURI(CONTENT_AUTHORITY, TimingsContract.TABLE_NAME + "/#", TIMINGS_ID);
+
 //        //eg. content://com.example.tasktimer.provider.Timing
 //        matcher.addURI(CONTENT_AUTHORITY, DurationsContract.TABLE_NAME, TASK_DURATIONS);
 //        //eg. content://com.example.tasktimer.provider.Timing/8
@@ -83,15 +83,15 @@ public class AppProvider extends ContentProvider {
                 queryBuilder.appendWhere(TasksContract.Columns._ID + " = " + taskId);
                 break;
 
-//            case TIMINGS:
-//                queryBuilder.setTables(TimingsContract.TABLE_NAME);
-//                break;
-//            case TIMINGS_ID:
-//                queryBuilder.setTables(TimingsContract.TABLE_NAME);
-//                long timingId = TimingsContract.getTimingId(uri);
-//                queryBuilder.appendWhere(TimingsContract.Columns._ID + " = " + timingId);
-//                break;
-//
+            case TIMINGS:
+                queryBuilder.setTables(TimingsContract.TABLE_NAME);
+                break;
+            case TIMINGS_ID:
+                queryBuilder.setTables(TimingsContract.TABLE_NAME);
+                long timingId = TimingsContract.getTimingId(uri);
+                queryBuilder.appendWhere(TimingsContract.Columns._ID + " = " + timingId);
+                break;
+
 //            case TASK_DURATIONS:
 //                queryBuilder.setTables(DuratioinsContract.TABLE_NAME);
 //                break;

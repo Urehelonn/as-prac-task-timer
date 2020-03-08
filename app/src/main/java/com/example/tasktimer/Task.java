@@ -9,22 +9,22 @@ public class Task implements Serializable {
     private final String mDescription;
     private final int mSortOrder;
 
-    public long getmId() {
+    long getmId() {
         return mId;
     }
-    public void setmId(long mId) {
+    void setmId(long mId) {
         this.mId = mId;
     }
 
-    public String getmName() {
+    String getmName() {
         return mName;
     }
 
-    public String getmDescription() {
+    String getmDescription() {
         return mDescription;
     }
 
-    public int getmSortOrder() {
+    int getmSortOrder() {
         return mSortOrder;
     }
 

@@ -39,7 +39,6 @@
     <string name="cancel_positive">Stay</string>
     <string name="cancel_negative">Leave</string>
     <string name="about_copyright">CopyRight ©</string>
-    <string name="about_version">0.0.0</string>
     <string name="about_info">Info, Blah blah blah. Repo: https://github.com/Urehelonn/as-prac-task-timer</string>
     <string name="about_contact">Contact: rat@example.com</string>
 

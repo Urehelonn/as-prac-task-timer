@@ -13,7 +13,6 @@
         android:id="@+id/about_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/about_version"
         android:textAlignment="viewEnd"
         android:textColor="@android:color/primary_text_light" />
 

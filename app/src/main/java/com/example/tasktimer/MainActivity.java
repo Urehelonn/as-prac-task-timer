@@ -8,7 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,9 +25,12 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
 
     private static final int DIALOG_ID_DELETE = 1;
     private static final int DIALOG_ID_CANCEL_EDIT = 2;
+    private static final int DIALOG_ID_CANCEL_EDIT_UP = 3;
 
     private AlertDialog mAlertDialog = null;
     private static final String TASKID = "TaskId";
+
+    private Timing mCurrTiming = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +138,16 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
         builder.setView(messageView);
         builder.setTitle(R.string.app_name);
         builder.setIcon(R.mipmap.ic_launcher);
+
+        messageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: about dialog clicked");
+                if (mAlertDialog != null && mAlertDialog.isShowing()) {
+                    mAlertDialog.dismiss();
+                }
+            }
+        });
         mAlertDialog = builder.create();
         mAlertDialog.setCanceledOnTouchOutside(true);
 
@@ -144,12 +159,12 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
     }
 
     @Override
-    public void onEditClick(Task task) {
+    public void onEditClick(@NonNull Task task) {
         taskEditRequest(task);
     }
 
     @Override
-    public void onDeleteClick(Task task) {
+    public void onDeleteClick(@NonNull Task task) {
         // add dialog confirmation before delete
         Log.d(TAG, "onDeleteClick: clicked");
 
@@ -163,6 +178,32 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
 
         dialog.setArguments(args);
         dialog.show(getSupportFragmentManager(), null);
+    }
+
+    @Override
+    public void onTaskLongClick(@NonNull Task task) {
+        Log.d(TAG, "onTaskLongClick: long clicked");
+        Toast.makeText(this, "Task " + task.getmName() + " clicked", Toast.LENGTH_SHORT).show();
+        TextView currTaskMsg = findViewById(R.id.main_curr_task);
+
+//         if there are task timing still in process
+        if (mCurrTiming != null) {
+            // check if selected task is already in progress
+            if (task.getmId() == mCurrTiming.getmTask().getmId()) {
+                // TODO saveTiming(mCurrTiming);
+                mCurrTiming = null;
+                currTaskMsg.setText(getString(R.string.list_noTask));
+            }
+            // if not, stop current processing task and start/continue the selected task
+            else {
+//                TODO saveTiming(mCurrTiming);
+                mCurrTiming = new Timing(task);
+                currTaskMsg.setText("Timing " + mCurrTiming.getmTask().getmName());
+            }
+        } else {
+            // no task timing in process, start timing selected task right away
+            currTaskMsg.setText("Timing "+ mCurrTiming.getmTask().getmName());
+        }
     }
 
     private void taskEditRequest(Task task) {
@@ -253,6 +294,15 @@ public class MainActivity extends AppCompatActivity implements CursorRecyclerVie
 
             dialog.setArguments(args);
             dialog.show(fm, null);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // if About Dialog still in progress, dismiss it to prevent memory leak
+        if (mAlertDialog != null && mAlertDialog.isShowing()) {
+            mAlertDialog.dismiss();
         }
     }
 }

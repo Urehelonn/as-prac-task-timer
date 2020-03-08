@@ -17,9 +17,9 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
     private OnTaskClickListener mListener;
 
     interface OnTaskClickListener {
-        void onEditClick(Task task);
-
-        void onDeleteClick(Task task);
+        void onEditClick(@NonNull Task task);
+        void onDeleteClick(@NonNull Task task);
+		void onTaskLongClick(@NonNull Task task);
     }
 
     public CursorRecyclerViewAdapter(Cursor cursor, OnTaskClickListener listener) {
@@ -59,7 +59,6 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
             );
             holder.name.setText(task.getmName());
             holder.description.setText(task.getmDescription());
-//                TODO: add listeners for the buttons
             holder.editBt.setVisibility(View.VISIBLE);
             holder.deleteBt.setVisibility(View.VISIBLE);
 
@@ -83,8 +82,20 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
                     }
                 }
             };
+			View.OnLongClickListener btLongListener = new View.OnLongClickListener(){
+				@Override
+				public boolean onLongClick(View v){
+					Log.d(TAG, "onLongClick: triggered===================asedfasdfasdfasdfa=");
+					if(mListener!=null){
+						mListener.onTaskLongClick(task);
+						return true;
+					}
+					return false;
+				}
+			};
             holder.editBt.setOnClickListener(btListener);
             holder.deleteBt.setOnClickListener(btListener);
+			holder.itemView.setOnLongClickListener(btLongListener);
         }
     }
 
@@ -125,13 +136,15 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
         return oldCursor;
     }
 
+	// inner class to insert view into recyclerview
     static class TaskViewHolder extends RecyclerView.ViewHolder {
         private static final String TAG = "TaskViewHolder";
 
-        TextView name = null;
-        TextView description = null;
-        ImageButton editBt = null;
-        ImageButton deleteBt = null;
+        TextView name;
+        TextView description;
+        ImageButton editBt;
+        ImageButton deleteBt;
+		View itemView;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -139,6 +152,7 @@ class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewA
             this.description = itemView.findViewById(R.id.task_description);
             this.editBt = itemView.findViewById(R.id.task_edit_bt);
             this.deleteBt = itemView.findViewById(R.id.task_delete_bt);
+			this.itemView = itemView;
             Log.d(TAG, "TaskViewHolder: TaskViewHolder loading completed");
         }
     }
