@@ -22,20 +22,20 @@ class AppDatabase extends SQLiteOpenHelper {
     }
 
     /**
-     *
      * Get an instance of the app's singleton database helper object
      *
      * @param context the content providers context.
      * @return a SQLite database helper object
      */
     static AppDatabase getInstance(Context context) {
-        if(instance == null) {
+        if (instance == null) {
             Log.d(TAG, "getInstance: creating new instance");
             instance = new AppDatabase(context);
         }
 
         return instance;
     }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "onCreate: starts");
@@ -48,22 +48,43 @@ class AppDatabase extends SQLiteOpenHelper {
                 + TasksContract.Columns.TASKS_SORTORDER + " INTEGER);";
         Log.d(TAG, sSQL);
         db.execSQL(sSQL);
-
+        addTimingsTable(db);
         Log.d(TAG, "onCreate: done");
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, "onUpgrade: starts");
-        switch(oldVersion) {
+        switch (oldVersion) {
             case 1:
-                // upgrade logic from version 1
+                addTimingsTable(db);
                 break;
             default:
                 throw new IllegalStateException("onUpgrade() with unknown newVersion: " + newVersion);
         }
         Log.d(TAG, "onUpgrade: done");
+    }
+
+    private void addTimingsTable(SQLiteDatabase db){
+        String sSQL = "CREATE TABLE " + TimingsContract.TABLE_NAME + " ("
+                + TimingsContract.Columns._ID + " INTEGER PRIMARY KEY NOT NULL, "
+                + TimingsContract.Columns.TIMINGS_TASK_ID + " INTEGER NOT NULL, "
+                + TimingsContract.Columns.TIMINGS_START_TIME + " INTEGER, "
+                + TimingsContract.Columns.TIMINGS_DURATION + " INTEGER);";
+        Log.d(TAG, sSQL);
+        db.execSQL(sSQL);
+
+        // create trigger to release task id after delete it
+        sSQL = "CREATE TRIGGER Remove_Task"
+                + " AFTER DELETE ON " + TimingsContract.TABLE_NAME
+                + " FOR EACH ROW"
+                + " BEGIN"
+                + " DELETE FROM " + TimingsContract.TABLE_NAME
+                + " WHERE " + TimingsContract.Columns.TIMINGS_TASK_ID + " = OLD."
+                + TasksContract.Columns._ID + ";"
+                + " END ";
+        Log.d(TAG, sSQL);
+        db.execSQL(sSQL);
     }
 }
 
